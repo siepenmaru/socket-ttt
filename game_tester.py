@@ -9,7 +9,7 @@ def main():
     ]
 
     exampleGame = game_logic.TicTacToe(exampleBoard)
-    exampleGame.moveAI
+    exampleGame.moveAI()
     for row in exampleGame.boardList:
         print(row)
 
