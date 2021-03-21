@@ -11,7 +11,6 @@ class TicTacToe:
         [x axis][y axis]
         """
         self.boardList = boardList
-        print("initialized")
 
     def checkWin(self, player):
         winConditions = [
@@ -50,8 +49,9 @@ class TicTacToe:
     def getEmptySquares(self):
         emptySquares = []
         for x, row in enumerate(self.boardList):
-            for y, row in enumerate(self.boardList):
-                emptySquares.append([x, y])
+            for y, square in enumerate(row):
+                if square == 0:
+                    emptySquares.append([x, y])
         return emptySquares
 
     def minimax(self, depth, player):
@@ -79,7 +79,7 @@ class TicTacToe:
             value = infinity
             for square in self.getEmptySquares():
                 self.boardList[square[0]][square[1]] = 1
-                value = min(value, self.minimax(square, depth - 1, 2))
+                value = min(value, self.minimax(depth - 1, 2))
                 self.boardList[square[0]][square[1]] = 0
             return value
 
@@ -87,7 +87,6 @@ class TicTacToe:
         value = -infinity
         nextMove = [-1, -1]
         depth = len(self.getEmptySquares())
-        print(f"value: {value}")
 
         if depth == 0 or self.checkGameOver():
             return
@@ -100,37 +99,16 @@ class TicTacToe:
                     if position == 0:
                         position = 2
                         newValue = self.minimax(depth, 1)
-                        print(f"newValue: {newValue}")
-                        
                         position = 0
 
                         if newValue > value:
                             nextMove = [x, y]
                             value = newValue
-                            print(f"value: {value}")
 
         return nextMove
 
     def moveAI(self):
-        print("moveAI")
         nextMove = self.getNextMove()
         x = nextMove[0]
         y = nextMove[1]
         self.boardList[x][y] = 2
-
-
-def main():
-    exampleBoard = [
-        [0, 1, 2],
-        [0, 1, 0],
-        [0, 0, 2]
-    ]
-
-    exampleGame = TicTacToe(exampleBoard)
-    exampleGame.moveAI()
-    for row in exampleGame.boardList:
-        print(row)
-
-
-if __name__ == "__main__":
-    main()
