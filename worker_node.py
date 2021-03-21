@@ -23,7 +23,8 @@ def socketHandler(connection: socket.socket, address: Tuple[str, int]):
 def logic(board: list):
     # tic-tac-toe game logic
     ticTacToe = game_logic.TicTacToe(board)
-    return ticTacToe.getNextMove()
+    ticTacToe.moveAI()
+    return ticTacToe.boardList
 
 
 def main():
