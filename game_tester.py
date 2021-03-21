@@ -10,7 +10,8 @@ def main():
 
     exampleGame = game_logic.TicTacToe(exampleBoard)
     exampleGame.moveAI
-    print(exampleGame.boardList)
+    for row in exampleGame.boardList:
+        print(row)
 
 
 if __name__ == "__main__":
