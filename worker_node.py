@@ -1,5 +1,6 @@
 import socket
 import threading
+import pickle
 import game_logic
 from typing import Tuple
 
@@ -13,11 +14,17 @@ def socketHandler(connection: socket.socket, address: Tuple[str, int]):
     print(f"Incoming connection from {address}")
 
     # Receives input from player in the form of 2d list, representing the game board
-    input_value = connection.recv(BUFFER_SIZE)
-    print(f"Input from {address}: {input_value}")
+    while True:
+        inputValue = connection.recv(BUFFER_SIZE)
+        if inputValue == b'':
+            connection.close()
+        else:
+            gameBoard = pickle.loads(inputValue)
+            print(f"Input from {address}: {inputValue}")
 
-    output_value = logic(input_value)
-    connection.send(output_value)
+            outputValue = logic(gameBoard)
+            data = pickle.dumps(outputValue)
+            connection.send(data)
 
 
 def logic(board: list):
