@@ -28,25 +28,33 @@ class TicTacToe:
         ]
 
         for winCondition in winConditions:
+            # Check if player occupies all the positions in a win condition
             if [player, player, player] == winCondition:
                 return True
 
         return False
 
     def checkGameOver(self):
-        # check if game is over
+        # Check if game is over
         return self.checkWin(1) or self.checkWin(2)
 
     def getScore(self, depth):
-        # Heuristic value of the current node (board)
+        """
+        Heuristic value of the current node (board)
+        1 if AI wins, -1 if player wins, 0 if tie
+        """
         if self.checkWin(2):
-            return 1
+            return depth - 1
         elif self.checkWin(1):
-            return -1
+            return 1 - depth
         else:
             return 0
 
     def getEmptySquares(self):
+        """
+        Returns squares which have not been occupied by a player
+        2D array of the x, y position
+        """
         emptySquares = []
         for x, row in enumerate(self.boardList):
             for y, square in enumerate(row):
@@ -57,7 +65,7 @@ class TicTacToe:
     def minimax(self, depth, player):
         """
         Minimax function for the game
-        Returns heuristic value of the board
+        Returns heuristic value of the board and position
         depth: number of iterations left until terminal node (game over)
         player: current player (player 1 vs ai 2)
         """
@@ -74,6 +82,7 @@ class TicTacToe:
                 value = max(value, self.minimax(depth - 1, 1))
                 self.boardList[square[0]][square[1]] = 0
             return value
+
         # Minimize score for player moves
         else:
             value = infinity
@@ -84,23 +93,28 @@ class TicTacToe:
             return value
 
     def getNextMove(self):
+        """
+        Get next move for AI.
+        Returns next optimal position
+        """
         value = -infinity
         nextMove = [-1, -1]
         depth = len(self.getEmptySquares())
 
-        if depth == 0 or self.checkGameOver():
-            return
+        # AI moves first at game start
         if depth == 9:
             nextMove = [1, 1]
         else:
+            # Exhaust all possible moves
             for x in range(3):
                 for y in range(3):
-                    position = self.boardList[x][y]
-                    if position == 0:
-                        position = 2
+                    if self.boardList[x][y] == 0:
+                        self.boardList[x][y] = 2
+                        # Calculate heuristic value of the board after move
                         newValue = self.minimax(depth, 1)
-                        position = 0
+                        self.boardList[x][y] = 0
 
+                        # Set new move if optimal
                         if newValue > value:
                             nextMove = [x, y]
                             value = newValue
@@ -108,6 +122,9 @@ class TicTacToe:
         return nextMove
 
     def moveAI(self):
+        """
+        AI ticks the board with the next optimal move
+        """
         nextMove = self.getNextMove()
         x = nextMove[0]
         y = nextMove[1]
