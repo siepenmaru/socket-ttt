@@ -14,13 +14,16 @@ def socketHandler(connection: socket.socket, address: Tuple[str, int]):
     print(f"Incoming connection from {address}")
 
     # Receives input from player in the form of 2d list, representing the game board
-    while True:
+    listening = True
+    while listening:
         inputValue = connection.recv(BUFFER_SIZE)
         if inputValue == b'':
+            print(f"Closing connection with {address}")
             connection.close()
+            listening = False
         else:
             gameBoard = pickle.loads(inputValue)
-            print(f"Input from {address}: {inputValue}")
+            print(f"Input from {address}: {gameBoard}")
 
             outputValue = logic(gameBoard)
             data = pickle.dumps(outputValue)
@@ -43,11 +46,14 @@ def main():
         print("Program running...")
         print("Terminate with Ctrl+C")
 
-        while True:
-            connection, address = sc.accept()
+        try:
+            while True:
+                connection, address = sc.accept()
 
-            thread = threading.Thread(target=socketHandler, args=(connection, address))
-            thread.start()
+                thread = threading.Thread(target=socketHandler, args=(connection, address))
+                thread.start()
+        except KeyboardInterrupt:
+            print("\nTerminating program.")
 
 
 if __name__ == "__main__":
