@@ -14,7 +14,6 @@ class TestGameLogic(unittest.TestCase):
         testGame.moveAI()
         self.assertEqual(testGame.boardList[1][1], 2)
 
-    # TODO: FIX THIS
     def test_prevent_enemy_winning(self):
         testBoard = [
             [0, 1, 0],
@@ -23,10 +22,17 @@ class TestGameLogic(unittest.TestCase):
         ]
         testGame = game_logic.TicTacToe(testBoard)
         testGame.moveAI()
-        print("\n")
-        for row in testBoard:
-            print(row)
         self.assertEqual(testGame.boardList[0][2], 2)
+
+    def test_idk_why_ai_doesnt_prevent_enemy_from_winning(self):
+        testBoard = [
+            [2, 2, 1],
+            [1, 1, 0],
+            [2, 1, 0]
+        ]
+        testGame = game_logic.TicTacToe(testBoard)
+        testGame.moveAI()
+        self.assertEqual(testGame.boardList[1][2], 2)
 
     def test_ai_can_win(self):
         testBoard = [
