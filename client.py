@@ -104,7 +104,7 @@ def main():
         ]
 
         print(f"\n{38*'='}")
-        print("Group B2\'s Unbeatable Tic-Tac-Toe Game")
+        print("Group B2\'s \"Unbeatable\" Tic-Tac-Toe Game")
         print(f"\n{38*'='}")
 
         # [0]: player symbol, [1]: AI symbol
@@ -138,7 +138,9 @@ def main():
 
         goAgain = input("Go again? (y/n)")
         if goAgain.upper() == "N":
+            print("See you next time!")
             running = False
+    manager.closeConnection(socket)
 
 
 if __name__ == "__main__":
