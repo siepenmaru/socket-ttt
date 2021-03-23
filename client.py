@@ -2,6 +2,12 @@ import manager_node as manager
 
 
 def checkWinState(boardList):
+    """
+    Check if there are any winners on the board
+    1: Player wins
+    2: AI wins
+    0: No winner
+    """
     winConditions = [
             # 3 in a Column
             [boardList[0][0], boardList[0][1], boardList[0][2]],
@@ -25,7 +31,11 @@ def checkWinState(boardList):
 
     return 0
 
+
 def hasEmptySquares(boardList):
+    """
+    Check if there are remaining empty squares on the board
+    """
     hasEmpty = False
     for row in boardList:
         for square in row:
@@ -33,12 +43,18 @@ def hasEmptySquares(boardList):
                 hasEmpty = True
     return hasEmpty
 
+
 def printBoard(boardList, playerSymbol, aiSymbol):
+    """
+    Display board in CLI
+    """
     border = "-----------"
     for x, row in enumerate(boardList):
-        display = ''
+        display = ''    # Row string
         for y, square in enumerate(row):
             ch = ''
+
+            # Mark symbol on the board
             if square == 0:
                 ch = f"{ y+1 + (3*(x)) }"
             elif square == 1:
@@ -46,17 +62,23 @@ def printBoard(boardList, playerSymbol, aiSymbol):
             else:
                 ch = aiSymbol
 
+            # Append to row string
             if y == 0:
                 display += f" {ch}"
             elif y == 1:
                 display += f" | {ch} | "
             elif y == 2:
                 display += f"{ch} "
+
         print(display)
         if x != 2:
             print(border)
 
+
 def chooseSymbol():
+    """
+    Player chooses their symbol
+    """
     symbolDict = {0: "X", 1: "O", 2: "X"}
     print("Choose a symbol: ")
     print("1: O")
@@ -68,7 +90,11 @@ def chooseSymbol():
         print("Invalid input!")
         return chooseSymbol()
 
+
 def chooseGoFirst():
+    """
+    Player chooses who goes first
+    """
     answer = input("Do you want to go first? (y/n)")
     if answer.upper() == "Y":
         return True
@@ -78,12 +104,16 @@ def chooseGoFirst():
         print("Invalid response!")
         return chooseGoFirst()
 
+
 def getPlayerMove(gameBoard):
+    """
+    Marks position on game board for player
+    """
     position = int(input("Which square would you like to pick? (1-9)"))
     positionDict = {
-        1:[0,0], 2:[0,1], 3:[0,2],
-        4:[1,0], 5:[1,1], 6:[1,2],
-        7:[2,0], 8:[2,1], 9:[2,2]
+        1: [0, 0], 2: [0, 1], 3: [0, 2],
+        4: [1, 0], 5: [1, 1], 6: [1, 2],
+        7: [2, 0], 8: [2, 1], 9: [2, 2]
     }
     position = positionDict.get(position)
     if gameBoard[position[0]][position[1]] == 0:
@@ -93,9 +123,10 @@ def getPlayerMove(gameBoard):
         print("Invalid square!")
         return getPlayerMove(gameBoard)
 
+
 def main():
     running = True
-    socket = manager.establishConnection()
+    socket = manager.establishConnection()  # Establish connection with worker node
     while running:
         gameBoard = [
             [0, 0, 0],
@@ -110,17 +141,16 @@ def main():
         # [0]: player symbol, [1]: AI symbol
         symbols = chooseSymbol()
         print(f"Now playing as {symbols[0]}...")
+
         if chooseGoFirst():
             printBoard(gameBoard, symbols[0], symbols[1])
             gameBoard = getPlayerMove(gameBoard)
-            manager.sendState(socket, gameBoard)
-            gameBoard = manager.receiveState(socket)
-            printBoard(gameBoard, symbols[0], symbols[1])
-        else:
-            manager.sendState(socket, gameBoard)
-            gameBoard = manager.receiveState(socket)
-            printBoard(gameBoard, symbols[0], symbols[1])
-        
+
+        manager.sendState(socket, gameBoard)
+        gameBoard = manager.receiveState(socket)
+        printBoard(gameBoard, symbols[0], symbols[1])
+
+        # Game is running
         while checkWinState(gameBoard) == 0 and hasEmptySquares(gameBoard):
             gameBoard = getPlayerMove(gameBoard)
 
@@ -128,12 +158,12 @@ def main():
             gameBoard = manager.receiveState(socket)
 
             printBoard(gameBoard, symbols[0], symbols[1])
-        
+
         if checkWinState(gameBoard) == 0:
             print("It's a Tie!")
         elif checkWinState(gameBoard) == 1:
             print("You Win! Wait.. How did you do that?")
-        elif checkWinState(gameBoard) == 2:
+        else:
             print("Computer Wins! Truth is, the game was rigged from the start..")
 
         goAgain = input("Go again? (y/n)")
