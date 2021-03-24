@@ -81,10 +81,16 @@ def chooseSymbol():
     Player chooses their symbol
     """
     symbolDict = {0: "X", 1: "O", 2: "X"}
+    playerSymbol = -1
     print("Choose a symbol: ")
     print("1: O")
     print("2: X")
-    playerSymbol = int(input(""))
+
+    try:
+        playerSymbol = int(input(""))
+    except ValueError:
+        pass
+
     if playerSymbol in [1, 2]:
         return [symbolDict.get(playerSymbol), symbolDict.get(playerSymbol-1)]
     else:
@@ -147,16 +153,29 @@ def main():
             printBoard(gameBoard, symbols[0], symbols[1])
             gameBoard = getPlayerMove(gameBoard)
 
-        manager.sendState(socket, gameBoard)
-        gameBoard = manager.receiveState(socket)
+        try:
+            manager.sendState(socket, gameBoard)
+            gameBoard = manager.receiveState(socket)
+        except EOFError:
+            manager.closeConnection(socket)
+            return
+
         printBoard(gameBoard, symbols[0], symbols[1])
 
         # Game is running
         while checkWinState(gameBoard) == 0 and hasEmptySquares(gameBoard):
             gameBoard = getPlayerMove(gameBoard)
 
-            manager.sendState(socket, gameBoard)
-            gameBoard = manager.receiveState(socket)
+            if checkWinState(gameBoard) != 0:
+                printBoard(gameBoard)
+                break
+
+            try:
+                manager.sendState(socket, gameBoard)
+                gameBoard = manager.receiveState(socket)
+            except EOFError:
+                manager.closeConnection(socket)
+                return
 
             printBoard(gameBoard, symbols[0], symbols[1])
 
