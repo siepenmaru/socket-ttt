@@ -15,19 +15,25 @@ def socketHandler(connection: socket.socket, address: Tuple[str, int]):
 
     # Receives input from player in the form of 2d list, representing the game board
     listening = True
-    while listening:
-        inputValue = connection.recv(BUFFER_SIZE)
-        if inputValue == b'':
-            print(f"Closing connection with {address}")
-            connection.close()
-            listening = False
-        else:
-            gameBoard = pickle.loads(inputValue)
-            print(f"Input from {address}: {gameBoard}")
+    try:
+        # Timeout after 45 seconds of not receiving any input
+        connection.settimeout(45)
+        while listening:
+            inputValue = connection.recv(BUFFER_SIZE)
+            if inputValue == b'':
+                print(f"Closing connection with {address}")
+                connection.close()
+                listening = False
+            else:
+                gameBoard = pickle.loads(inputValue)
+                print(f"Input from {address}: {gameBoard}")
 
-            outputValue = logic(gameBoard)
-            data = pickle.dumps(outputValue)
-            connection.send(data)
+                outputValue = logic(gameBoard)
+                data = pickle.dumps(outputValue)
+                connection.send(data)
+    except socket.timeout:
+        print(f"Connection with {address} timed out")
+        connection.close()
 
 
 def logic(board: list):

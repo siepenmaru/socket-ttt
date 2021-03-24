@@ -24,6 +24,10 @@ def sendState(sc, gameBoard):
 
 
 def receiveState(sc):
-    outputValue = sc.recv(BUFFER_SIZE)
-    nextBoard = pickle.loads(outputValue)
-    return nextBoard
+    try:
+        outputValue = sc.recv(BUFFER_SIZE)
+        nextBoard = pickle.loads(outputValue)
+        return nextBoard
+    except EOFError:
+        print("Sorry! Connection with server timed out.")
+        raise
