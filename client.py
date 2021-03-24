@@ -1,4 +1,5 @@
 import manager_node as manager
+from pretty_text import PrettyText as pt
 
 
 def checkWinState(boardList):
@@ -58,9 +59,9 @@ def printBoard(boardList, playerSymbol, aiSymbol):
             if square == 0:
                 ch = f"{ y+1 + (3*(x)) }"
             elif square == 1:
-                ch = playerSymbol
+                ch = pt.BOLD + pt.BLUE + playerSymbol + pt.END
             else:
-                ch = aiSymbol
+                ch = pt.BOLD + pt.RED + aiSymbol + pt.END
 
             # Append to row string
             if y == 0:
@@ -95,7 +96,7 @@ def chooseGoFirst():
     """
     Player chooses who goes first
     """
-    answer = input("Do you want to go first? (y/n)")
+    answer = input("Do you want to go first? (y/n): ")
     if answer.upper() == "Y":
         return True
     if answer.upper() == "N":
@@ -134,9 +135,9 @@ def main():
             [0, 0, 0]
         ]
 
-        print(f"\n{38*'='}")
+        print(f"\n{40*'='}")
         print("Group B2\'s \"Unbeatable\" Tic-Tac-Toe Game")
-        print(f"\n{38*'='}")
+        print(f"{40*'='}")
 
         # [0]: player symbol, [1]: AI symbol
         symbols = chooseSymbol()
@@ -166,7 +167,7 @@ def main():
         else:
             print("Computer Wins! Truth is, the game was rigged from the start..")
 
-        goAgain = input("Go again? (y/n)")
+        goAgain = input("Go again? (y/n): ")
         if goAgain.upper() == "N":
             print("See you next time!")
             running = False
