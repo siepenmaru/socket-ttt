@@ -6,8 +6,8 @@ NOTE: Mandatory Feature 1
 Manager Node functionality
 """
 
-# TODO: this is a local ip for testing. change this when switching to GVM
-SERVER_IP = "127.0.0.1"
+# NOTE: GVM Static IP Address
+SERVER_IP = "35.224.229.170"
 SERVER_PORT = 4321
 BUFFER_SIZE = 1024
 
