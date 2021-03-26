@@ -18,7 +18,6 @@ def socketHandler(connection: socket.socket, address: Tuple[str, int]):
     # Receives input from player in the form of 2d list, representing the game board
     listening = True
     try:
-        # NOTE: Advanced Feature: Timeout worker node
         # Timeout after 45 seconds of not receiving any input
         connection.settimeout(45)
         while listening:
@@ -59,6 +58,7 @@ def main():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sc:
         sc.bind((SERVER_NAME, SERVER_PORT))
         sc.listen(0)
+        sc.settimeout(120)
 
         print("Program running...")
         print("Terminate with Ctrl+C")
@@ -70,6 +70,11 @@ def main():
                 thread = threading.Thread(target=socketHandler, args=(connection, address))
                 thread.start()
         except KeyboardInterrupt:
+            pass
+        except socket.timeout:
+            # NOTE: Advanced Feature: Timeout worker node
+            print("Program has been idle for 2 minutes")
+        finally:
             print("\nTerminating program.")
 
 
