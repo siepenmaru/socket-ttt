@@ -142,7 +142,7 @@ def getPlayerMove(gameBoard):
     """
     Marks position on game board for player
     """
-    position = int(input("Which square would you like to pick? (1-9)"))
+    position = int(input("Which square would you like to pick? (1-9): "))
     positionDict = {
         1: [0, 0], 2: [0, 1], 3: [0, 2],
         4: [1, 0], 5: [1, 1], 6: [1, 2],
