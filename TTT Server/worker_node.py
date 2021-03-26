@@ -55,6 +55,11 @@ def logic(board: list):
     return ticTacToe.boardList
 
 
+def rejectConnection(connection: socket.socket, address: Tuple[str, int]):
+    print(f"Rejecting connection from {address}")
+    connection.close()
+
+
 def main():
     """
     NOTE: Mandatory Feature 2 & 3
@@ -80,11 +85,15 @@ def main():
 
                     while not taskQueue.empty():
                         value = taskQueue.get()
-                        time.sleep(5)
-                        taskQueue.task_done
+                        time.sleep(0.1)
+                        taskQueue.task_done()
 
                     thread.start()
-                    print(f"[ACTIVE CONNECTIONS] {threading.activeCount()-1}")         
+                    print(f"[ACTIVE CONNECTIONS] {threading.activeCount()-1}")
+                else:
+                    connection, address = sc.accept()
+                    thread = threading.Thread(target=rejectConnection, args=(connection, address))
+                    thread.start()
         except KeyboardInterrupt:
             print("\nTerminating program.")
         except socket.timeout:
