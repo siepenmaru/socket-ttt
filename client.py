@@ -50,7 +50,7 @@ def hasEmptySquares(boardList):
     return hasEmpty
 
 
-def printBoard(boardList, playerSymbol, aiSymbol):
+def printBoard(boardList, playerSymbol, aiSymbol, colorsOn):
     """
     Display board in CLI
     """
@@ -64,9 +64,15 @@ def printBoard(boardList, playerSymbol, aiSymbol):
             if square == 0:
                 ch = f"{ y+1 + (3*(x)) }"
             elif square == 1:
-                ch = pt.BOLD + pt.BLUE + playerSymbol + pt.END
+                if colorsOn:
+                    ch = pt.BOLD + pt.BLUE + playerSymbol + pt.END
+                else:
+                    ch = playerSymbol
             else:
-                ch = pt.BOLD + pt.RED + aiSymbol + pt.END
+                if colorsOn:
+                    ch = pt.BOLD + pt.RED + aiSymbol + pt.END
+                else:
+                    ch = aiSymbol
 
             # Append to row string
             if y == 0:
@@ -79,6 +85,21 @@ def printBoard(boardList, playerSymbol, aiSymbol):
         print(display)
         if x != 2:
             print(border)
+
+
+def chooseColor():
+    """
+    Enable or disable terminal colors
+    Terminals must support ANSI escape codes for colors
+    """
+    answer = input("Enable colors? (Windows cmd unsupported) (y/n): ")
+    if answer.upper() == "Y":
+        return True
+    if answer.upper() == "N":
+        return False
+    else:
+        print("Invalid response!")
+        return chooseColor()
 
 
 def chooseSymbol():
@@ -150,12 +171,14 @@ def main():
         print("Group B2\'s \"Unbeatable\" Tic-Tac-Toe Game")
         print(f"{40*'='}")
 
+        colorsOn = chooseColor()
+
         # [0]: player symbol, [1]: AI symbol
         symbols = chooseSymbol()
         print(f"Now playing as {symbols[0]}...")
 
         if chooseGoFirst():
-            printBoard(gameBoard, symbols[0], symbols[1])
+            printBoard(gameBoard, symbols[0], symbols[1], colorsOn)
             gameBoard = getPlayerMove(gameBoard)
 
         try:
@@ -165,14 +188,14 @@ def main():
             manager.closeConnection(socket)
             return
 
-        printBoard(gameBoard, symbols[0], symbols[1])
+        printBoard(gameBoard, symbols[0], symbols[1], colorsOn)
 
         # Game is running
         while checkWinState(gameBoard) == 0 and hasEmptySquares(gameBoard):
             gameBoard = getPlayerMove(gameBoard)
 
             if checkWinState(gameBoard) != 0:
-                printBoard(gameBoard)
+                printBoard(gameBoard, colorsOn)
                 break
 
             try:
@@ -182,7 +205,7 @@ def main():
                 manager.closeConnection(socket)
                 return
 
-            printBoard(gameBoard, symbols[0], symbols[1])
+            printBoard(gameBoard, symbols[0], symbols[1], colorsOn)
 
         if checkWinState(gameBoard) == 0:
             print("It's a Tie!")
