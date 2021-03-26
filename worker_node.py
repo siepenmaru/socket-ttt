@@ -1,6 +1,7 @@
 import socket
 import threading
 import pickle
+import os
 import game_logic
 from typing import Tuple
 
@@ -58,7 +59,7 @@ def main():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sc:
         sc.bind((SERVER_NAME, SERVER_PORT))
         sc.listen(0)
-        sc.settimeout(600)
+        sc.settimeout(1800)
 
         print("Program running...")
         print("Terminate with Ctrl+C")
@@ -70,12 +71,11 @@ def main():
                 thread = threading.Thread(target=socketHandler, args=(connection, address))
                 thread.start()
         except KeyboardInterrupt:
-            pass
+            print("\nTerminating program.")
         except socket.timeout:
             # NOTE: Advanced Feature: Timeout worker node
-            print("Program has been idle for 2 minutes")
-        finally:
-            print("\nTerminating program.")
+            print("Program has been idle for 30 minutes, shutting down..")
+            os.system("sudo shutdown -h now")
 
 
 if __name__ == "__main__":
