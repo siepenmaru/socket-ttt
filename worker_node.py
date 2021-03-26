@@ -2,12 +2,14 @@ import socket
 import threading
 import pickle
 import game_logic
+import time
+import queue
 from typing import Tuple
 
 SERVER_NAME = ""
 SERVER_PORT = 4321
 BUFFER_SIZE = 1024
-
+taskQueue = queue.Queue() # used to implement queue mechanism
 
 def socketHandler(connection: socket.socket, address: Tuple[str, int]):
     """
@@ -23,10 +25,12 @@ def socketHandler(connection: socket.socket, address: Tuple[str, int]):
         connection.settimeout(45)
         while listening:
             inputValue = connection.recv(BUFFER_SIZE)
+
             if inputValue == b'':
                 print(f"Closing connection with {address}")
                 connection.close()
                 listening = False
+            
             else:
                 gameBoard = pickle.loads(inputValue)
                 print(f"Input from {address}: {gameBoard}")
@@ -56,22 +60,34 @@ def main():
     Multithreaded worker node
     Communicates with manager node over socket
     """
+    jobLimit = 3 # the limit of tasks
+
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sc:
         sc.bind((SERVER_NAME, SERVER_PORT))
         sc.listen(0)
 
         print("Program running...")
         print("Terminate with Ctrl+C")
-
+        
         try:
             while True:
-                connection, address = sc.accept()
-
-                thread = threading.Thread(target=socketHandler, args=(connection, address))
-                thread.start()
+                if (threading.activeCount()-1) < jobLimit: 
+                    connection, address = sc.accept()
+                    thread = threading.Thread(target=socketHandler, args=(connection, address))
+                    taskQueue.put(connection, address)   
+                    
+                    while not taskQueue.empty():
+                        value = taskQueue.get()
+                        time.sleep(5)
+                        taskQueue.task_done
+                  
+                    thread.start()
+                    print(f"[ACTIVE CONNECTIONS] {threading.activeCount()-1}")
+                
+               
         except KeyboardInterrupt:
             print("\nTerminating program.")
-
+                
 
 if __name__ == "__main__":
     main()

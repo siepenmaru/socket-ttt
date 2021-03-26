@@ -172,7 +172,7 @@ def main():
             gameBoard = getPlayerMove(gameBoard)
 
             if checkWinState(gameBoard) != 0:
-                printBoard(gameBoard)
+                printBoard(gameBoard, symbols[0], symbols[1])
                 break
 
             try:
