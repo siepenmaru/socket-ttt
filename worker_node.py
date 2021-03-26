@@ -58,7 +58,7 @@ def main():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sc:
         sc.bind((SERVER_NAME, SERVER_PORT))
         sc.listen(0)
-        sc.settimeout(120)
+        sc.settimeout(600)
 
         print("Program running...")
         print("Terminate with Ctrl+C")
