@@ -10,12 +10,15 @@ BUFFER_SIZE = 1024
 
 
 def socketHandler(connection: socket.socket, address: Tuple[str, int]):
-    # Handles sockets
+    """
+    Socket handler for thread instance
+    """
     print(f"Incoming connection from {address}")
 
     # Receives input from player in the form of 2d list, representing the game board
     listening = True
     try:
+        # NOTE: Advanced Feature: Timeout worker node
         # Timeout after 45 seconds of not receiving any input
         connection.settimeout(45)
         while listening:
@@ -32,19 +35,27 @@ def socketHandler(connection: socket.socket, address: Tuple[str, int]):
                 data = pickle.dumps(outputValue)
                 connection.send(data)
     except socket.timeout:
+        # Close connection with idle player
         print(f"Connection with {address} timed out")
         connection.close()
 
 
 def logic(board: list):
-    # tic-tac-toe game logic
+    """
+    Tic-tac-toe game logic
+    Returns updated TTT game board
+    """
     ticTacToe = game_logic.TicTacToe(board)
     ticTacToe.moveAI()
     return ticTacToe.boardList
 
 
 def main():
-    # init program
+    """
+    NOTE: Mandatory Feature 2 & 3
+    Multithreaded worker node
+    Communicates with manager node over socket
+    """
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sc:
         sc.bind((SERVER_NAME, SERVER_PORT))
         sc.listen(0)

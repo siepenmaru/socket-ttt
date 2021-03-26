@@ -1,6 +1,11 @@
 import manager_node as manager
 from pretty_text import PrettyText as pt
 
+"""
+Client-side CLI Game Implementation
+Uses manager node to communicate with server
+"""
+
 
 def checkWinState(boardList):
     """

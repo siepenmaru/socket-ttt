@@ -2,6 +2,10 @@ from math import inf as infinity
 
 
 class TicTacToe:
+    """
+    Game logic for tic tac toe
+    Processes state of board, then returns next move by computer
+    """
     def __init__(self, boardList):
         """
         2D List of ints
