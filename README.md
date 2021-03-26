@@ -1,9 +1,32 @@
 # Group B2
-
 Socket Programming assignment from members of Group B2 in Computer Networks 2020-2021 Even course.
 
 ## Our Application
 A tic-tac-toe game implementing Minimax Adversarial Search
+
+## Group B2 Members
+- Al Taaj Kautsar Supangkat - 1906426746
+- Avatar Putra Pertama Azka - 1906426802
+- Seto Adhi Prasetyo - 1906426960
+
+## Requirements / Dependencies
+- Python 3.7.3 or later
+- Terminal Emulator (Must support ANSI escape codes for colored mode)
+- An internet connection
+
+## Execution Instructions
+**For Client**
+1. Download the folder Group B2 Tic-Tac-Toe Client
+2. Navigate your preferred terminal emulator to the folder
+3. Run the client program with `python3 client.py`
+4. Enjoy the game!
+
+## How To Play The Game
+1. Choose if you want to play with colored symbols (terminal must support ANSI escape codes)
+2. Choose a symbol to play with (X or O)
+3. Choose if you want to go first
+4. Choose which square you would like to place your symbol on (squares are indexed 1 - 9)
+5. The first player who gets 3 of their own symbols in a row, column, or diagonal wins the game.
 
 ## Implemented Features
 - [x] Implement a program for a manager node which can receive tasks from the user. In this case, the manager node will be the local machine of the user itself.
